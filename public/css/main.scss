@@ -1,0 +1,129 @@
+  @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap');
+// Colors
+$nord0: #2e3440;
+$nord1: #3b4252;
+$nord2: #434c5e;
+$nord3: #4c566a;
+$nord4: #d8dee9;
+$nord5: #e5e9f0;
+$nord6: #eceff4;
+$nord7: #8fbcbb;
+$nord8: #88c0d0;
+$nord9: #81a1c1;
+$nord10: #5e81ac;
+$nord11: #bf616a;
+$nord12: #d08770;
+$nord13: #ebcb8b;
+$nord14: #a3be8c;
+$nord15: #b48ead;
+
+body {
+    background-color: $nord0;
+    padding: 0 10px 0 10px;
+    min-width: 345px;
+}
+a{
+    text-decoration: none;
+    color: inherit;
+}
+#container{
+    width: 100%;
+    margin: auto;
+    @media screen and (min-width:769px){
+        width: 512px;
+    }
+    @media screen and (min-width:1024px){
+        width: 758px;
+    }
+}
+
+#hero {
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    height: 128px;
+    justify-content: center;
+    align-items: center;
+    color: $nord8;
+    #title{
+        font-family: 'Pacifico';
+        font-size: 2.5rem;
+    }
+    .nav{
+        display: flex;
+        gap: 24px;
+        a{
+            color: $nord7;
+            font-size: 1.5rem;
+            font-family: 'Poppins';
+            font-weight: 600;
+        }
+    }
+}
+hr{
+    color: $nord10;
+    margin: 20px 0;
+}
+#tags{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px 10px;
+    .tag{
+        display: inline-block;
+        padding: 8px 10px;
+        border-radius: 10%;
+        background-color: $nord9;
+        color: $nord4;
+        font-size: 1rem;
+        font-family: 'Roboto';
+    }
+}
+#list{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 0 10px 0 10px;
+    .card{
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 20px;
+        background-color: $nord1;
+        border-radius: 10px;
+        .title{
+            color: $nord6;
+            font-family: 'Poppins';
+            font-size: 1.5rem;            
+            font-weight: 800;
+        }
+        .tags{
+            display: flex;
+            font-size: 1rem;
+            font-family: 'Roboto';
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: $nord5;
+            .tag{
+                color: $nord10;
+                font-weight: 400;
+            }
+        }
+        .abstract{
+            color: $nord4;
+            font-size: 1rem;
+            line-height: 1.4rem;
+            text-align: justify;
+            font-family: 'Roboto';
+
+        }
+        .date{
+            text-align: end;
+            color: $nord9;
+            font-family: 'Roboto';
+            font-size: 1rem;
+        }
+    }    
+}
+

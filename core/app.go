@@ -13,15 +13,14 @@ func InitApp() *fiber.App {
 	})
 
 	// Static files
-	// TODO: add static
+	app.Static("/static", "./public")
 
 	// init middleware
 	// TODO: add middleware
 
 	// init routes
-	// TODO: add routes
 	app.Get("/", routes.PostsRoute)
-	app.Get("/apps", routes.AppsRoute)
+	app.Get("/:id<int>", routes.PostRoute)
 
 	return app
 }

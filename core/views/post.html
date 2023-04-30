@@ -1,0 +1,10 @@
+{{template "head"}}
+
+{{with .Post}}
+<h2>{{.Title}}</h2>
+<p>{{.PublishedAt}}</p>
+<p>{{.Abstract}}</p>
+<p>{{.Body}}</p>
+{{end}}
+
+{{template "footer"}}

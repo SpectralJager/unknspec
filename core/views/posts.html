@@ -1,0 +1,14 @@
+{{template "head"}}
+
+<h1>Posts</h1>
+{{range .Posts}}
+<div>
+    <h3><a href="/{{.Id}}">{{.Title}}</a></h3>
+    <p>{{.Abstract}}</p>
+    <p>{{.PublishedAt}}</p>
+</div>
+{{else}}
+<p>Nothing to show...</p>
+{{end}}
+
+{{template "footer"}}
