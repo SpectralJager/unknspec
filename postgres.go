@@ -27,6 +27,45 @@ func (s *PostgresStorage) getConn() (*sqlx.DB, error) {
 	return db, nil
 }
 
+func (s *PostgresStorage) InitTables() error {
+	schemas := []string{
+		`create table if not exists posts (
+			id serial primary key,
+			title varchar(128) not null unique,
+			abstract varchar(512) not null,
+			body text not null,
+			edited_at timestamp not null,
+			published bool default false
+		)`,
+		`create table if not exists tags (
+			id serial primary key,
+			name varchar(64) not null unique
+		)`,
+		`create table if not exists posts_tags (
+			post_id int not null,
+			tag_id int not null,
+			primary key(post_id, tag_id),
+			foreign key(post_id) 
+				references posts(id)
+				on delete cascade,		
+			foreign key(tag_id) 
+				references tags(id)
+				on delete cascade
+		)`,
+	}
+	for _, sch := range schemas {
+		db, err := s.getConn()
+		if err != nil {
+			return err
+		}
+		_, err = db.Exec(sch)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (s *PostgresStorage) GetPosts() ([]*Post, error) {
 	return nil, nil
 }
