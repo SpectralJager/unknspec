@@ -1,17 +1,35 @@
 package main
 
 import (
-	"fmt"
-	"log"
+	"net/http"
+	"text/template"
+
+	"github.com/gorilla/mux"
 )
 
 func main() {
-	passwd := "devpasswd"
-	storage := NewPostgresStorage(fmt.Sprintf("user=postgres password=%s sslmode=disable dbname=unknspec", passwd))
-	err := storage.InitTables()
-	if err != nil {
-		log.Fatal(err)
+	router := mux.NewRouter()
+	router.HandleFunc("/", basicHandle(indexHandler))
+
+	http.ListenAndServe(":8080", router)
+}
+
+type handleFunc func(http.ResponseWriter, *http.Request) error
+
+func basicHandle(fn handleFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if err := fn(w, r); err != nil {
+			w.WriteHeader(http.StatusConflict)
+			w.Write([]byte(err.Error()))
+			return
+		}
 	}
-	server := NewServer("localhost:3000", storage)
-	log.Fatalln(server.Run())
+}
+
+func indexHandler(w http.ResponseWriter, r *http.Request) error {
+	tmpl, err := template.ParseFiles("templates/index.html")
+	if err != nil {
+		return err
+	}
+	return tmpl.Execute(w, nil)
 }
