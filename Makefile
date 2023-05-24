@@ -1,6 +1,2 @@
-build:
-	go build -o bin/server.exe
-run: build
-	./bin/server.exe
-test:
-	go test -v ./...
+watch:
+	./tailwindcss -i ./public/css/temp.css -o ./public/css/res.css --watch
