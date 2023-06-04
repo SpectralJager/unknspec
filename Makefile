@@ -4,3 +4,5 @@ build:
 	go build -o cmd/server ./src/main.go 
 run: build
 	./cmd/server
+test:
+	go test ./...

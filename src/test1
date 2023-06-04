@@ -1,3 +1,0 @@
-SELECT articles.title, tags.value FROM ((
-    articles INNER JOIN article_tag ON articles.article_id = article_tag.article_id) INNER JOIN tags on article_tag.tag_id = tags.tag_id
-) where tags.tag_id in (0, 2);
