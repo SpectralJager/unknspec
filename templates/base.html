@@ -1,0 +1,35 @@
+{{define "header"}}
+<!DOCTYPE html>
+<html lang="en" class="sm:scroll-smooth">
+<head>
+    <link rel="shortcut icon" href="/public/images/favicon.png">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/public/css/res.css">
+    <script src="https://kit.fontawesome.com/489757ffcd.js" crossorigin="anonymous"></script>
+    <title>Unknspec: {{.}}</title>
+</head>
+<body class="bg-nord-0 text-nord-5 bg-cover bg-center h-screen" style="background-image: url('/public/images/tiles3.svg');">
+    <section class="w-full pt-20 flex flex-col justify-center items-center">
+        <img src="/public/images/logo.png" alt="Unknspec" class="text-5xl text-center text-nord-8 w-80">
+        <nav class="my-6 text-2xl font-bold flex gap-6">
+            <a href="/posts" class="transition-colors hover:text-nord-10">Posts</a>
+            <a href="#" class="transition-colors hover:text-nord-10">Apps</a>
+        </nav>
+    </section>
+    <hr class="border-nord-3 w-10/12 mx-auto sm:w-8/12 lg:w-6/12 xl:w-4/12">
+{{end}}
+
+{{define "footer"}}
+    <footer class="h-32 bg-nord-2 text-nord-4 text-xl flex flex-col justify-center items-center gap-2 mt-10 sticky top-[100vh]">
+        <span class="">Created by <span class="text-nord-8 font-bold transition-colors hover:text-nord-11">SpectralJager</span></span>
+        <div class="flex flex-row gap-4">
+            <a href="" class=""><i class="fa-brands fa-github"></i></a>            
+            <a href="" class=""><i class="fa-solid fa-envelope"></i></a>            
+            <a href="" class=""><i class="fa-brands fa-telegram"></i></a>
+        </div>
+    </footer>
+</body>
+</html>
+{{end}}
