@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"fmt"
 	"unknspec/src/models"
 
 	"github.com/jmoiron/sqlx"
@@ -11,16 +10,29 @@ import (
 
 type Database interface {
 	getDB(context.Context) (*sqlx.DB, error)
-	ArticleGetById(context.Context, int) (*models.Article, error)
-	ArticleGetByTitle(context.Context, string) (*models.Article, error)
-	ArticleAll(context.Context, int, int) ([]*models.Article, error)
 
-	TagGetById(context.Context, int) (*models.Tag, error)
-	TagGetByName(context.Context, string) (*models.Tag, error)
-	TagAll(context.Context) ([]*models.Tag, error)
+	GetArticleById(context.Context, int) (*models.Article, error)
+	GetArticleByTitle(context.Context, string) (*models.Article, error)
+	GetAllArticles(context.Context, int, int) ([]*models.Article, error)
 
-	GetTagsOfArticleId(context.Context, int) ([]*models.Tag, error)
-	GetArticlesFromTagsId(context.Context, ...int) ([]*models.Article, error)
+	GetTagById(context.Context, int) (*models.Tag, error)
+	GetTagByName(context.Context, string) (*models.Tag, error)
+	GetAllTags(context.Context) ([]*models.Tag, error)
+
+	GetTagsForArticle(context.Context, int) ([]*models.Tag, error)
+	GetArticlesForTag(context.Context, int) ([]*models.Article, error)
+
+	CreateArticle(context.Context, *models.Article) error
+	CreateTags(context.Context, *models.Tag) error
+
+	AddTagToArticle(context.Context, int, int) error
+
+	UpdateArticle(context.Context, *models.Article) error
+	UpdateTag(context.Context, *models.Tag) error
+
+	DeleteArticle(context.Context, int) error
+	DeleteTag(context.Context, int) error
+	RemoveTagFromArticle(context.Context, int, int) error
 }
 
 type SQLite struct {
@@ -44,26 +56,26 @@ func (db *SQLite) getDB(ctx context.Context) (*sqlx.DB, error) {
 	return conn, nil
 }
 
-func (db *SQLite) ArticleGetById(ctx context.Context, id int) (*models.Article, error) {
-	articles := []*models.Article{}
+func (db *SQLite) GetArticleById(ctx context.Context, id int) (*models.Article, error) {
 	conn, err := db.getDB(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer conn.Close()
-	if err := conn.SelectContext(ctx, &articles, "select * from articles where articles.article_id = ?", id); err != nil {
+	articles := []*models.Article{}
+	if err := conn.SelectContext(ctx, &articles, "select * from articles where articles.article_id = $1", id); err != nil {
 		return nil, err
 	}
 	return articles[0], nil
 }
 
-func (db *SQLite) ArticleGetByTitle(ctx context.Context, title string) (*models.Article, error) {
-	articles := []*models.Article{}
+func (db *SQLite) GetArticleByTitle(ctx context.Context, title string) (*models.Article, error) {
 	conn, err := db.getDB(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer conn.Close()
+	articles := []*models.Article{}
 	if err := conn.SelectContext(ctx, &articles, "select * from articles where articles.title like $1", title); err != nil {
 		return nil, err
 	}
@@ -71,13 +83,13 @@ func (db *SQLite) ArticleGetByTitle(ctx context.Context, title string) (*models.
 }
 
 // if limit == 0, then return all articles
-func (db *SQLite) ArticleAll(ctx context.Context, limit, offset int) ([]*models.Article, error) {
-	articles := []*models.Article{}
+func (db *SQLite) GetAllArticles(ctx context.Context, limit, offset int) ([]*models.Article, error) {
 	conn, err := db.getDB(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer conn.Close()
+	articles := []*models.Article{}
 	if limit == 0 {
 		if err := conn.SelectContext(ctx, &articles, "select * from articles"); err != nil {
 			return nil, err
@@ -90,26 +102,26 @@ func (db *SQLite) ArticleAll(ctx context.Context, limit, offset int) ([]*models.
 	return articles, nil
 }
 
-func (db *SQLite) TagGetById(ctx context.Context, id int) (*models.Tag, error) {
-	tags := []*models.Tag{}
+func (db *SQLite) GetTagById(ctx context.Context, id int) (*models.Tag, error) {
 	conn, err := db.getDB(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer conn.Close()
+	tags := []*models.Tag{}
 	if err := conn.SelectContext(ctx, &tags, "select * from tags where tag_id = ?", id); err != nil {
 		return nil, err
 	}
 	return tags[0], nil
 }
 
-func (db *SQLite) TagGetByName(ctx context.Context, name string) (*models.Tag, error) {
-	tags := []*models.Tag{}
+func (db *SQLite) GetTagByName(ctx context.Context, name string) (*models.Tag, error) {
 	conn, err := db.getDB(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer conn.Close()
+	tags := []*models.Tag{}
 	if err := conn.SelectContext(ctx, &tags, "select * from tags where name like $1", name); err != nil {
 		return nil, err
 	}
@@ -117,7 +129,7 @@ func (db *SQLite) TagGetByName(ctx context.Context, name string) (*models.Tag, e
 }
 
 // if limit == 0, then return all articles
-func (db *SQLite) TagAll(ctx context.Context) ([]*models.Tag, error) {
+func (db *SQLite) GetAllTags(ctx context.Context) ([]*models.Tag, error) {
 	tags := []*models.Tag{}
 	conn, err := db.getDB(ctx)
 	if err != nil {
@@ -130,7 +142,7 @@ func (db *SQLite) TagAll(ctx context.Context) ([]*models.Tag, error) {
 	return tags, nil
 }
 
-func (db *SQLite) GetTagsOfArticleId(ctx context.Context, id int) ([]*models.Tag, error) {
+func (db *SQLite) GetTagsForArticle(ctx context.Context, id int) ([]*models.Tag, error) {
 	conn, err := db.getDB(ctx)
 	if err != nil {
 		return nil, err
@@ -143,23 +155,65 @@ func (db *SQLite) GetTagsOfArticleId(ctx context.Context, id int) ([]*models.Tag
 	return tags, nil
 }
 
-func (db *SQLite) GetArticlesFromTagsId(ctx context.Context, ids ...int) ([]*models.Article, error) {
+func (db *SQLite) GetArticlesForTag(ctx context.Context, id int) ([]*models.Article, error) {
 	conn, err := db.getDB(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer conn.Close()
 
-	r := ""
-	for _, id := range ids {
-		r += fmt.Sprintf("%d,", id)
-	}
-	r = r[:len(r)-1]
-
 	articles := []*models.Article{}
-	if err := conn.SelectContext(ctx, &articles, fmt.Sprintf("select articles.* from articles inner join article_tag on article_tag.article_id = articles.article_id where article_tag.tag_id in (%s) group by articles.article_id", r)); err != nil {
+	if err := conn.SelectContext(ctx, &articles, "select articles.* from articles inner join article_tag on article_tag.article_id = articles.article_id where article_tag.tag_id = $1 group by articles.article_id", id); err != nil {
 		return nil, err
 	}
 	return articles, nil
 
+}
+
+func (db *SQLite) CreateArticle(ctx context.Context, article *models.Article) error {
+	conn, err := db.getDB(ctx)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+	if _, err := conn.NamedExecContext(ctx, "insert into articles (title, description) values (:title,:description)", article); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (db *SQLite) CreateTags(ctx context.Context, tag *models.Tag) error {
+	conn, err := db.getDB(ctx)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+	if _, err := conn.NamedExecContext(ctx, "insert into tags (name) values (:name)", tag); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (db *SQLite) AddTagToArticle(context.Context, int, int) error {
+	return nil
+}
+
+func (db *SQLite) UpdateArticle(context.Context, *models.Article) error {
+	return nil
+}
+
+func (db *SQLite) UpdateTag(context.Context, *models.Tag) error {
+	return nil
+}
+
+func (db *SQLite) DeleteArticle(context.Context, int) error {
+	return nil
+}
+
+func (db *SQLite) DeleteTag(context.Context, int) error {
+	return nil
+}
+
+func (db *SQLite) RemoveTagFromArticle(context.Context, int, int) error {
+	return nil
 }

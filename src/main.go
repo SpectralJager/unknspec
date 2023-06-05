@@ -30,16 +30,16 @@ func main() {
 	app.Get("/posts", func(c *fiber.Ctx) error {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 		defer cancel()
-		tags, err := db.TagAll(ctx)
+		tags, err := db.GetAllTags(ctx)
 		if err != nil {
 			return err
 		}
-		articles, err := db.ArticleAll(ctx, 0, 0)
+		articles, err := db.GetAllArticles(ctx, 0, 0)
 		if err != nil {
 			return err
 		}
 		for _, article := range articles {
-			article.Tags, err = db.GetTagsOfArticleId(ctx, article.Id)
+			article.Tags, err = db.GetTagsForArticle(ctx, article.Id)
 			if err != nil {
 				return err
 			}
@@ -57,7 +57,7 @@ func main() {
 		if err != nil {
 			return err
 		}
-		article, err := db.ArticleGetById(ctx, id)
+		article, err := db.GetArticleById(ctx, id)
 		if err != nil {
 			return err
 		}
@@ -73,16 +73,16 @@ func main() {
 		if name == "" {
 			return c.Redirect("/", fiber.StatusTemporaryRedirect)
 		}
-		tag, err := db.TagGetByName(ctx, name)
+		tag, err := db.GetTagByName(ctx, name)
 		if err != nil {
 			return err
 		}
-		articles, err := db.GetArticlesFromTagsId(ctx, tag.Id)
+		articles, err := db.GetArticlesForTag(ctx, tag.Id)
 		if err != nil {
 			return err
 		}
 		for _, article := range articles {
-			article.Tags, err = db.GetTagsOfArticleId(ctx, article.Id)
+			article.Tags, err = db.GetTagsForArticle(ctx, article.Id)
 			if err != nil {
 				return err
 			}
