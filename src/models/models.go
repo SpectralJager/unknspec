@@ -5,4 +5,8 @@ type Article struct {
 	Title       string `db:"title"`
 	Description string `db:"description"`
 }
-type Tag struct{}
+
+type Tag struct {
+	Id   int    `db:"tag_id"`
+	Name string `db:"name"`
+}

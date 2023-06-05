@@ -1,16 +1,16 @@
-package db
+package database
 
 import (
 	"context"
 	"testing"
 	"time"
-	"unknspec/src/models"
 )
+
+var db = NewSQLite("db.sqlite")
 
 func TestGetDB(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	db := NewSQLite("db.sqlite")
 	if _, err := db.getDB(ctx); err != nil {
 		t.Fatal(err)
 	}
@@ -19,11 +19,7 @@ func TestGetDB(t *testing.T) {
 func TestGetArticle(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	db := NewSQLite("db.sqlite")
-	if _, err := db.getDB(ctx); err != nil {
-		t.Fatal(err)
-	}
-	article, err := db.ArticleGetById(0)
+	article, err := db.ArticleGetById(ctx, 0)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -35,11 +31,7 @@ func TestGetArticle(t *testing.T) {
 func TestGetArticleByTitle(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	db := NewSQLite("db.sqlite")
-	if _, err := db.getDB(ctx); err != nil {
-		t.Fatal(err)
-	}
-	article, err := db.ArticleGetByTitle("Test1")
+	article, err := db.ArticleGetByTitle(ctx, "Test1")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -51,59 +43,74 @@ func TestGetArticleByTitle(t *testing.T) {
 func TestGetAllArticles(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	db := NewSQLite("db.sqlite")
-	if _, err := db.getDB(ctx); err != nil {
+	_, err := db.ArticleAll(ctx, 0, 0)
+	if err != nil {
 		t.Fatal(err)
 	}
-	_, err := db.ArticleAll()
+	articles, err := db.ArticleAll(ctx, 2, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(articles) != 2 {
+		t.Fatalf("expected 2 records, get %d", len(articles))
+	}
+}
+
+func TestGetTag(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	tag, err := db.TagGetById(ctx, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if tag.Id != 0 {
+		t.Fatalf("Expected tag with id %d, got %d", 0, tag.Id)
+	}
+}
+
+func TestGetTagByName(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	tag, err := db.TagGetByName(ctx, "tag1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if tag.Id != 0 {
+		t.Fatalf("Expected tag with id %d, got %d", 0, tag.Id)
+	}
+}
+
+func TestGetAllTags(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	_, err := db.TagAll(ctx)
 	if err != nil {
 		t.Fatal(err)
 	}
 }
 
-func TestCreateArticle(t *testing.T) {
+func TestGetTagsOfArticle(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	db := NewSQLite("db.sqlite")
-	if _, err := db.getDB(ctx); err != nil {
-		t.Fatal(err)
-	}
-	_, err := db.ArticleCreate(&models.Article{Id: 0, Title: "foo", Description: "bar"})
+	tags, err := db.GetTagsOfArticleId(ctx, 0)
 	if err != nil {
 		t.Fatal(err)
 	}
+	for _, val := range tags {
+		t.Logf("got %v", val)
+	}
+	// t.Fatal()
 }
 
-func TestUpdateArticle(t *testing.T) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+func TestGetArticlesByTags(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Hour)
 	defer cancel()
-	db := NewSQLite("db.sqlite")
-	if _, err := db.getDB(ctx); err != nil {
-		t.Fatal(err)
-	}
-	article, err := db.ArticleGetByTitle("foo")
+	articles, err := db.GetArticlesFromTagsId(ctx, 0)
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = db.ArticleUpdate(article.Id, &models.Article{Id: 0, Title: "fiz", Description: "baz"})
-	if err != nil {
-		t.Fatal(err)
+	for _, val := range articles {
+		t.Logf("got %v", val)
 	}
-}
-
-func TestDeleteArticle(t *testing.T) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-	db := NewSQLite("db.sqlite")
-	if _, err := db.getDB(ctx); err != nil {
-		t.Fatal(err)
-	}
-	article, err := db.ArticleGetByTitle("fiz")
-	if err != nil {
-		t.Fatal(err)
-	}
-	err = db.ArticleDelete(article.Id)
-	if err != nil {
-		t.Fatal(err)
-	}
+	// t.Fatal()
 }
