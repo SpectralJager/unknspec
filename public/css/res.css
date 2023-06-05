@@ -1278,6 +1278,15 @@ video {
   background-color: rgb(76 86 106 / var(--tw-bg-opacity));
 }
 
+.bg-nord-14 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(163 190 140 / var(--tw-bg-opacity));
+}
+
+.bg-opacity-25 {
+  --tw-bg-opacity: 0.25;
+}
+
 .bg-cover {
   background-size: cover;
 }
@@ -1314,6 +1323,11 @@ video {
 .py-4 {
   padding-top: 1rem;
   padding-bottom: 1rem;
+}
+
+.px-5 {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
 }
 
 .pt-20 {
