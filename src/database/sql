@@ -1,9 +1,0 @@
--- database: /run/media/spectrum/Spectrum/projects/unknspec/src/database/db.sqlite
-
--- Use the ▷ button in the top right corner to run the entire file.
-
-SELECT tags.tag_id, tags.name FROM tags inner join article_tag on article_tag.tag_id = tags.tag_id where article_tag.article_id = 0;
-
-select * from article_tag;
-
-select articles.* from articles inner join article_tag on article_tag.article_id = articles.article_id where article_tag.tag_id in (0,2) group by articles.article_id ;
