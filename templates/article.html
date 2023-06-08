@@ -1,9 +1,10 @@
+{{define "article"}}
 {{template "header" .article.Title}} 
     <main class="w-full mx-auto px-8 py-4 mt-8 sm:w-8/12 lg:w-6/12 xl:w-5/12 2xl:w-4/12 bg-nord-1 rounded-sm">
         {{with .article}}
         <article class="prose prose-invert prose-p:text-justify prose-p:mt-0 prose-headings:mt-8 prose-headings:mb-4 prose-blockquote:border-nord-10 prose-blockquote:bg-nord-10 prose-blockquote:bg-opacity-20 prose-blockquote:px-4 prose-blockquote:py-2 prose-figcaption:text-lg prose-pre:whitespace-normal prose-a:text-nord-8 prose-hr:border-nord-3 prose-hr:mb-0 prose-hr:mt-2 prose-figcaption:text-justify">
             <h1>{{.Title}}</h1>
-            <p class="px-5 py-2 bg-nord-14 bg-opacity-25">{{.Description}}</p>
+            <p class="px-5 py-2 bg-nord-14 bg-opacity-25">{{.Abstract}}</p>
             <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Qui quidem quis sapiente, quisquam illum vel cumque iste ipsum voluptates fuga architecto minus sit iure quo perspiciatis maxime eaque nemo suscipit, facere a consequuntur? Fuga incidunt amet quia, adipisci eum repellat! Quidem, eaque labore inventore laudantium incidunt accusamus reprehenderit at numquam voluptates cupiditate recusandae quod.</p>
             <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Qui quidem quis sapiente, quisquam illum vel cumque iste ipsum voluptates fuga architecto minus sit iure quo perspiciatis maxime eaque nemo suscipit, facere a consequuntur? Fuga incidunt amet quia, adipisci eum repellat! Quidem, eaque labore inventore laudantium incidunt accusamus reprehenderit at numquam voluptates cupiditate recusandae quod.</p>
             <blockquote>
@@ -32,3 +33,4 @@
         {{end}}
     </main>
 {{template "footer"}} 
+{{end}}

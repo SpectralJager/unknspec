@@ -1,21 +1,24 @@
+{{define "articles"}}
 {{template "header" "Posts"}}
     <main class="flex flex-col w-10/12 mx-auto my-4 sm:w-8/12 lg:w-6/12 xl:w-4/12">
         <section class="flex flex-row flex-wrap mb-6 gap-4">
-            {{range .tags}}
-            <a href="/tag/{{.Name}}"><div class="px-4 py-2 bg-nord-10 text-nord-6 rounded transition-colors hover:bg-nord-9">{{.Name}}</div></a>
+            {{range $key, $val := .tags}}
+            <a href="/articles/{{$key}}"><div class="px-4 py-2 bg-nord-10 text-nord-6 rounded transition-colors hover:bg-nord-9">{{$key}}</div></a>
             {{end}}
         </section>
         <section class="flex flex-col gap-6">
             {{range .articles}}
             <article class="bg-nord-1 px-6 py-4 rounded transition-colors hover:bg-nord-3">
-                <h4 class="text-lg text-nord-6 font-bold lg:text-2xl"><a href="/posts/{{.Id}}">{{.Title}}</a></h4>
+                <h4 class="text-lg text-nord-6 font-bold lg:text-2xl"><a href="/article/{{.Id.Hex}}">{{.Title}}</a></h4>
                 <div class="flex flex-wrap my-2 gap-2 lg:text-xl">
+                    {{if .Tags}}
                     <span class="font-bold">Tags:</span>
                     {{range .Tags}}
-                    <a href="/tag/{{.Name}}" class="text-nord-7">{{.Name}}</a>
+                    <a href="/articles/{{.}}" class="text-nord-7">{{.}}</a>
+                    {{end}}
                     {{end}}
                 </div>
-                <p class="text-sm text-justify text-nord-4 lg:text-lg">{{.Description}}</p>
+                <p class="text-sm text-justify text-nord-4 lg:text-lg">{{.Abstract}}</p>
             </article>
             {{end}}
         </section>
@@ -26,3 +29,4 @@
         </div> -->
     </main>
 {{template "footer"}}
+{{end}}
