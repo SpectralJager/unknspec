@@ -2,7 +2,7 @@
 {{template "header" .article.Title}} 
     <main class="w-full mx-auto px-8 py-4 mt-8 sm:w-8/12 lg:w-6/12 xl:w-5/12 2xl:w-4/12 bg-nord-1 rounded-sm">
         {{with .article}}
-        <article class="prose prose-invert prose-p:text-justify prose-p:mt-0 prose-headings:mt-8 prose-headings:mb-4 prose-blockquote:border-nord-10 prose-blockquote:bg-nord-10 prose-blockquote:bg-opacity-20 prose-blockquote:px-4 prose-blockquote:py-2 prose-figcaption:text-lg prose-pre:whitespace-normal prose-a:text-nord-8 prose-hr:border-nord-3 prose-hr:mb-0 prose-hr:mt-2 prose-figcaption:text-justify">
+        <article class="prose prose-invert prose-p:text-justify prose-p:mt-0 prose-headings:mt-8 prose-headings:mb-4 prose-blockquote:border-nord-10 prose-blockquote:bg-nord-10 prose-blockquote:bg-opacity-20 prose-blockquote:px-4 prose-blockquote:py-2 prose-figcaption:text-lg prose-pre:overflow-x-auto prose-a:text-nord-8 prose-hr:border-nord-3 prose-hr:mb-0 prose-hr:mt-2 prose-figcaption:text-justify">
             <h1>{{.Title}}</h1>
             <p class="px-5 py-2 bg-nord-14 bg-opacity-25">{{.Abstract}}</p>
             <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Qui quidem quis sapiente, quisquam illum vel cumque iste ipsum voluptates fuga architecto minus sit iure quo perspiciatis maxime eaque nemo suscipit, facere a consequuntur? Fuga incidunt amet quia, adipisci eum repellat! Quidem, eaque labore inventore laudantium incidunt accusamus reprehenderit at numquam voluptates cupiditate recusandae quod.</p>
@@ -20,9 +20,27 @@
             </figure>
             <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Qui quidem quis sapiente, quisquam illum vel cumque iste ipsum voluptates fuga architecto minus sit iure quo perspiciatis maxime eaque nemo suscipit, facere a consequuntur? Fuga incidunt amet quia, adipisci eum repellat! Quidem, eaque labore inventore laudantium incidunt accusamus reprehenderit at numquam voluptates cupiditate recusandae quod <a href="#">[1]</a>.</p>
             <pre>
-                <code>
-                    var image = document.createElement();
-                </code>
+<code>
+function Q_rsqrt(number){ 
+    var i;
+    var x2, y;
+    const threehalfs = 1.5;
+
+    x2 = number * 0.5;
+    y = number;
+    //evil floating bit level hacking
+    var buf = new ArrayBuffer(4);
+    (new Float32Array(buf))[0] = number;
+    i =  (new Uint32Array(buf))[0];
+    i = (0x5f3759df - (i >> 1)); //What the fuck?
+    (new Uint32Array(buf))[0] = i;
+    y = (new Float32Array(buf))[0];
+    y  = y * ( threehalfs - ( x2 * y * y ) );   // 1st iteration
+//  y  = y * ( threehalfs - ( x2 * y * y ) );   // 2nd iteration, this can be removed
+
+    return y;
+}
+</code>
             </pre>
             <hr>
             <h2>Bibliography</h2>

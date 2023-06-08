@@ -1268,6 +1268,11 @@ video {
   background-color: rgb(94 129 172 / var(--tw-bg-opacity));
 }
 
+.bg-nord-14 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(163 190 140 / var(--tw-bg-opacity));
+}
+
 .bg-nord-2 {
   --tw-bg-opacity: 1;
   background-color: rgb(67 76 94 / var(--tw-bg-opacity));
@@ -1276,11 +1281,6 @@ video {
 .bg-nord-3 {
   --tw-bg-opacity: 1;
   background-color: rgb(76 86 106 / var(--tw-bg-opacity));
-}
-
-.bg-nord-14 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(163 190 140 / var(--tw-bg-opacity));
 }
 
 .bg-opacity-25 {
@@ -1305,6 +1305,11 @@ video {
   padding-right: 1rem;
 }
 
+.px-5 {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
 .px-6 {
   padding-left: 1.5rem;
   padding-right: 1.5rem;
@@ -1323,11 +1328,6 @@ video {
 .py-4 {
   padding-top: 1rem;
   padding-bottom: 1rem;
-}
-
-.px-5 {
-  padding-left: 1.25rem;
-  padding-right: 1.25rem;
 }
 
 .pt-20 {
@@ -1476,8 +1476,48 @@ video {
   line-height: 1.75rem;
 }
 
+.prose-code\:overflow-auto :is(:where(code):not(:where([class~="not-prose"] *))) {
+  overflow: auto;
+}
+
+.prose-code\:whitespace-pre-line :is(:where(code):not(:where([class~="not-prose"] *))) {
+  white-space: pre-line;
+}
+
+.prose-pre\:overflow-auto :is(:where(pre):not(:where([class~="not-prose"] *))) {
+  overflow: auto;
+}
+
+.prose-pre\:overflow-x-auto :is(:where(pre):not(:where([class~="not-prose"] *))) {
+  overflow-x: auto;
+}
+
+.prose-pre\:scroll-auto :is(:where(pre):not(:where([class~="not-prose"] *))) {
+  scroll-behavior: auto;
+}
+
 .prose-pre\:whitespace-normal :is(:where(pre):not(:where([class~="not-prose"] *))) {
   white-space: normal;
+}
+
+.prose-pre\:whitespace-nowrap :is(:where(pre):not(:where([class~="not-prose"] *))) {
+  white-space: nowrap;
+}
+
+.prose-pre\:whitespace-pre :is(:where(pre):not(:where([class~="not-prose"] *))) {
+  white-space: pre;
+}
+
+.prose-pre\:whitespace-pre-line :is(:where(pre):not(:where([class~="not-prose"] *))) {
+  white-space: pre-line;
+}
+
+.prose-pre\:whitespace-pre-wrap :is(:where(pre):not(:where([class~="not-prose"] *))) {
+  white-space: pre-wrap;
+}
+
+.prose-pre\:whitespace-break-spaces :is(:where(pre):not(:where([class~="not-prose"] *))) {
+  white-space: break-spaces;
 }
 
 .prose-hr\:mb-0 :is(:where(hr):not(:where([class~="not-prose"] *))) {
