@@ -7,6 +7,6 @@ import (
 
 func main() {
 	db := database.NewMongoStorage("mongodb://localhost:27017/")
-	server := server.NewServer(":3000", db)
+	server := server.NewServer("localhost:3000", db)
 	server.Run()
 }

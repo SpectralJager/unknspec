@@ -57,15 +57,6 @@ func (db *MongoStorage) GetArticle(ctx context.Context, id string) (*models.Arti
 	return articles[0], nil
 }
 
-func (db *MongoStorage) GetArticlesWithTag(ctx context.Context, tag string) ([]*models.Article, error) {
-	filter := bson.D{{Key: "tags", Value: bson.D{{Key: "$all", Value: bson.A{tag}}}}}
-	return db.filterArticles(ctx, filter)
-}
-func (db *MongoStorage) GetOnlyPublishedArticlesWithTag(ctx context.Context, tag string) ([]*models.Article, error) {
-	filter := bson.D{{Key: "tags", Value: bson.D{{Key: "$all", Value: bson.A{tag}}}}, {"is_draft", false}}
-	return db.filterArticles(ctx, filter)
-}
-
 func (db *MongoStorage) CreateArticle(ctx context.Context, article *models.Article) error {
 	filter := bson.D{{Key: "title", Value: article.Title}}
 	articles, err := db.filterArticles(ctx, filter)
@@ -88,7 +79,6 @@ func (db *MongoStorage) UpdateArticle(ctx context.Context, id string, article *m
 	update := bson.D{{"$set", bson.D{
 		{"title", article.Title},
 		{"abstract", article.Abstract},
-		{"tags", article.Tags},
 		{"body", article.Body},
 		{"updated_at", time.Now().UTC()},
 		{"is_draft", article.IsDraft},
