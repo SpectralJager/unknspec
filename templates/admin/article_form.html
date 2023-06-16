@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" class="sm:scroll-smooth">
+<head>
+    <link rel="shortcut icon" href="/public/images/favicon.png">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/public/css/res.css">
+    <script src="https://kit.fontawesome.com/489757ffcd.js" crossorigin="anonymous"></script>
+    <title>Unknspec: Admin</title>
+</head>
+<body class="bg-nord-0 text-nord-5 bg-cover bg-center h-screen" style="background-image: url('/public/images/tiles2.svg');">
+    <div class="flex flex-row h-full">
+        <section class="w-2/12 bg-nord-1 flex flex-col gap-12 px-4 pt-16">
+            <h1 class="text-center text-2xl font-bold">Unknspec: Admin</h1>
+            <nav class="flex flex-col gap-4">
+                <a href="#" class="px-4 py-2 bg-nord-2 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Dashboard<i class="fa-solid fa-clipboard"></i></a>
+                <a href="#" class="px-4 py-2 bg-nord-2 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Articles<i class="fa-solid fa-newspaper"></i></a>
+            </nav>
+            <a href="#" class="px-4 py-2 bg-nord-11 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Logout <i class="fa-solid fa-right-from-bracket"></i></a>
+            
+            <div class="flex flex-col gap-4 text-center">
+                <h4 class="text-xl font-bold">Actions</h4>
+                <a href="#" class="px-4 py-2 font-bold bg-nord-2 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Back</a>
+                <a href="#" class="px-4 py-2 font-bold bg-nord-7 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Save</a>
+                <a href="#" class="px-4 py-2 font-bold bg-nord-11 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Delete</a>
+            </div>
+        </section>
+        <main class="flex flex-col h-full w-10/12 px-80 pt-20 overflow-y-scroll gap-8">
+            <h1 class="text-3xl text-nord-6">Editing Article: <span class="text-nord-8">aksjfnl2k1LKJfn12</span></h1>
+            <div class="flex flex-col gap-4 bg-nord-1 px-4 py-4 rounded-sm">
+                <label class="text-2xl text-nord-5">
+                    Title
+                </label>
+                <input type="text" name="title" placeholder="Enter title" class="bg-nord-2 text-nord-5 px-4 py-2 rounded-sm">
+            </div>
+            <div class="flex flex-col gap-2 bg-nord-1 px-4 py-4 rounded-sm">
+                <label class="text-2xl text-nord-5">
+                    Abstract
+                </label>
+                <span class="text-nord-7">max length 512 symbols</span>
+                <textarea name="abstract" placeholder="Enter abstract" rows="4" maxlength="512" class="bg-nord-2 text-nord-5 px-4 py-2 rounded-sm resize-none"></textarea>
+            </div>
+            <div class="flex flex-row gap-4 bg-nord-1 px-4 py-4 rounded-sm items-baseline">
+                <label class="text-2xl text-nord-6">
+                    Is Draft: 
+                </label>
+                <input type="checkbox" name="isDraft">
+            </div>
+            <div class="flex flex-col gap-2 bg-nord-1 px-4 py-4 rounded-sm">
+                <label class="text-2xl text-nord-5">
+                    Body
+                </label>
+                <span class="text-nord-7">markdown</span>
+                <textarea name="body" placeholder="Enter body" class="bg-nord-2 text-nord-5 px-4 py-2 rounded-sm resize-none h-[80vh]"></textarea>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
