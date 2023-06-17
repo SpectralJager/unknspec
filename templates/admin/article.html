@@ -1,0 +1,70 @@
+{{block "newArticle" .}}
+<h1 class="text-3xl text-nord-6">New Article</h1>
+<div class="flex flex-row gap-4 text-center">
+    <button hx-get="/admin/articles" hx-target="main" hx-swap="innerHTML" hx-confirm="Are you sure want leave change unsaved?" class="px-4 py-2 bg-nord-2 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Cancel</button>
+    <button hx-post="/admin/article" hx-target="main" hx-swap="innerHTML" hx-confirm="Are you sure want save article?" hx-include="[name='title'], [name='abstract'], [name='body'], [name='isDraft']" class="px-4 py-2 bg-nord-14 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Save</button>
+</div>
+<div class="flex flex-col gap-4 bg-nord-1 px-4 py-4 rounded-sm">
+    <label class="text-2xl text-nord-5">
+        Title
+    </label>
+    <input type="text" name="title" placeholder="Enter title" class="bg-nord-2 text-nord-5 px-4 py-2 rounded-sm">
+</div>
+<div class="flex flex-col gap-2 bg-nord-1 px-4 py-4 rounded-sm">
+    <label class="text-2xl text-nord-5">
+        Abstract
+    </label>
+    <span class="text-nord-7">max length 512 symbols</span>
+    <textarea name="abstract" placeholder="Enter abstract" rows="4" maxlength="512" class="bg-nord-2 text-nord-5 px-4 py-2 rounded-sm resize-none"></textarea>
+</div>
+<div class="flex flex-row gap-4 bg-nord-1 px-4 py-4 rounded-sm items-baseline">
+    <label class="text-2xl text-nord-6">
+        Is Draft: 
+    </label>
+    <input type="checkbox" name="isDraft">
+</div>
+<div class="flex flex-col gap-2 bg-nord-1 px-4 py-4 rounded-sm">
+    <label class="text-2xl text-nord-5">
+        Body
+    </label>
+    <span class="text-nord-7">markdown</span>
+    <textarea name="body" placeholder="Enter body" class="bg-nord-2 text-nord-5 px-4 py-2 rounded-sm resize-none h-[80vh]"></textarea>
+</div>
+{{end}}
+
+{{block "editArticle" .}}
+{{with .article}}
+<h1 class="text-3xl text-nord-6">Edit Article: <span class="text-nord-8">{{.Id.Hex}}</span></h1>
+<div class="flex flex-row gap-4 text-center">
+    <button hx-get="/admin/articles" hx-target="main" hx-swap="innerHTML" hx-confirm="Are you sure want leave change unsaved?" class="px-4 py-2 bg-nord-2 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Cancel</button>
+    <button hx-put="/admin/article/{{.Id.Hex}}" hx-target="main" hx-swap="innerHTML" hx-confirm="Are you sure want save changes?" hx-include="[name='title'], [name='abstract'], [name='body'], [name='isDraft']" class="px-4 py-2 bg-nord-14 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Save</button>
+    <button hx-delete="/admin/article/{{.Id.Hex}}" hx-target="main" hx-swap="innerHTML" hx-confirm="Are you sure want delete this article?" class="px-4 py-2 bg-nord-11 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Delete</button>
+</div>
+<div class="flex flex-col gap-4 bg-nord-1 px-4 py-4 rounded-sm">
+    <label class="text-2xl text-nord-5">
+        Title
+    </label>
+    <input type="text" name="title" placeholder="Enter title" value="{{.Title}}" class="bg-nord-2 text-nord-5 px-4 py-2 rounded-sm">
+</div>
+<div class="flex flex-col gap-2 bg-nord-1 px-4 py-4 rounded-sm">
+    <label class="text-2xl text-nord-5">
+        Abstract
+    </label>
+    <span class="text-nord-7">max length 512 symbols</span>
+    <textarea name="abstract" placeholder="Enter abstract" rows="4" maxlength="512" class="bg-nord-2 text-nord-5 px-4 py-2 rounded-sm resize-none">{{.Abstract}}</textarea>
+</div>
+<div class="flex flex-row gap-4 bg-nord-1 px-4 py-4 rounded-sm items-baseline">
+    <label class="text-2xl text-nord-6">
+        Is Draft: 
+    </label>
+    <input type="checkbox" name="isDraft" {{if .IsDraft}} checked {{end}}>
+</div>
+<div class="flex flex-col gap-2 bg-nord-1 px-4 py-4 rounded-sm">
+    <label class="text-2xl text-nord-5">
+        Body
+    </label>
+    <span class="text-nord-7">markdown</span>
+    <textarea name="body" placeholder="Enter body" class="bg-nord-2 text-nord-5 px-4 py-2 rounded-sm resize-none h-[80vh]">{{.Body}}</textarea>
+</div>
+{{end}}
+{{end}}

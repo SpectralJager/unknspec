@@ -40,6 +40,10 @@ func (db *MongoStorage) GetAllArticles(ctx context.Context) ([]*models.Article, 
 	return db.filterArticles(ctx, bson.D{{}})
 }
 
+func (db *MongoStorage) GetArticlesByTitle(ctx context.Context, title string) ([]*models.Article, error) {
+	return db.filterArticles(ctx, bson.D{{"title", bson.D{{"$regex", title}}}})
+}
+
 func (db *MongoStorage) GetOnlyPublishedArticles(ctx context.Context) ([]*models.Article, error) {
 	return db.filterArticles(ctx, bson.D{{"is_draft", false}})
 }
@@ -58,6 +62,15 @@ func (db *MongoStorage) GetArticle(ctx context.Context, id string) (*models.Arti
 }
 
 func (db *MongoStorage) CreateArticle(ctx context.Context, article *models.Article) error {
+	if article.Title == "" {
+		return fmt.Errorf("article title cannot be empty")
+	}
+	if article.Abstract == "" {
+		return fmt.Errorf("article abstract cannot be empty")
+	}
+	if article.Body == "" {
+		return fmt.Errorf("article body cannot be empty")
+	}
 	filter := bson.D{{Key: "title", Value: article.Title}}
 	articles, err := db.filterArticles(ctx, filter)
 	if err != nil {

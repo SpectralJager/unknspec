@@ -1,67 +1,50 @@
-<!DOCTYPE html>
-<html lang="en" class="sm:scroll-smooth">
-<head>
-    <link rel="shortcut icon" href="/public/images/favicon.png">
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/public/css/res.css">
-    <script src="https://kit.fontawesome.com/489757ffcd.js" crossorigin="anonymous"></script>
-    <title>Unknspec: Admin</title>
-</head>
-<body class="bg-nord-0 text-nord-5 bg-cover bg-center h-screen" style="background-image: url('/public/images/tiles2.svg');">
-    <div class="flex flex-row h-full">
-        <section class="w-2/12 bg-nord-1 flex flex-col gap-12 px-4 pt-16">
-            <h1 class="text-center text-2xl font-bold">Unknspec: Admin</h1>
-            <nav class="flex flex-col gap-4">
-                <a href="#" class="px-4 py-2 bg-nord-2 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Dashboard<i class="fa-solid fa-clipboard"></i></a>
-                <a href="#" class="px-4 py-2 bg-nord-2 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Articles<i class="fa-solid fa-newspaper"></i></a>
-            </nav>
-            <a href="#" class="px-4 py-2 bg-nord-11 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Logout <i class="fa-solid fa-right-from-bracket"></i></a>
-        </section>
-        <main class="flex flex-col h-full w-10/12 px-10 pt-20 overflow-y-scroll">
-            <div class="flex flex-row w-full gap-4">
-                <input type="text" name="search" placeholder="search by article title" class="flex-grow bg-nord-1 px-4 py-2 text-xl text-nord-5 rounded-sm">
-                <a href="#" class="px-4 py-2 bg-nord-13 text-nord-0 text-xl rounded-sm"><i class="fa-solid fa-plus"></i> New Article</a>
-            </div>
-            <div class="overflow-x-auto mt-8">
-                <table class="w-full text-left">
-                    <thead class="bg-nord-1">
-                        <tr>
-                            <th scope="col" class="px-6 py-3">
-                                Id
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Title
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                IsDraft
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Action
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="bg-nord-3 border-b-nord-0">
-                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                liasfna12fnaLKk12jjj
-                            </th>
-                            <td class="px-6 py-4">
-                                Lorem ipsum dolor sit amet.
-                            </td>
-                            <td class="px-6 py-4">
-                                false
-                            </td>
-                            <td class="px-6 py-4">
-                                <a href="#" class="px-4 py-2 bg-nord-13 text-nord-0 rounded">Edit</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-        </main>
-    </div>
-</body>
-</html>
+{{block "articles" .}}
+<div class="flex flex-row w-full gap-4">
+    <input hx-post="/admin/articles" hx-trigger="keyup delay:500ms changed" hx-target="#articles-list" hx-swap="innerHTML" type="text" name="search" placeholder="search by article title" class="flex-grow bg-nord-1 px-4 py-2 text-xl text-nord-5 rounded-sm">
+    <button hx-get="/admin/article" hx-swap="innerHTML" hx-target="main" class="px-4 py-2 bg-nord-13 text-nord-0 text-xl rounded-sm"><i class="fa-solid fa-plus"></i> New Article</button>
+</div>
+<div id="articles-list" class="overflow-x-auto mt-8">
+    {{block "articlesList" .}}
+    {{if .articles}}
+    <table class="w-full text-left">
+        <thead class="bg-nord-1">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    Id
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Title
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    IsDraft
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Action
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .articles}}
+            <tr class="bg-nord-3 border-b-nord-0">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    {{.Id.Hex}}
+                </th>
+                <td class="px-6 py-4">
+                    {{.Title}}
+                </td>
+                <td class="px-6 py-4">
+                    {{.IsDraft}}
+                </td>
+                <td class="px-6 py-4">
+                    <button hx-get="/admin/article/{{.Id.Hex}}" hx-target="main" hx-swap="innerHTML" class="px-4 py-2 bg-nord-13 text-nord-0 rounded">Edit</a>
+                </td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+    {{else}}
+    <h1 class="text-center text-2xl font-bold text-nord-4">Here is no articles</h1>
+    {{end}}
+    {{end}}
+</div>
+{{end}}

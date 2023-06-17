@@ -7,21 +7,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/public/css/res.css">
     <script src="https://kit.fontawesome.com/489757ffcd.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.2" integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h" crossorigin="anonymous"></script>
     <title>Unknspec: Admin</title>
 </head>
-<body class="bg-nord-0 text-nord-5 bg-cover bg-center h-screen" style="background-image: url('/public/images/tiles2.svg');">
+<body class="bg-nord-0 text-nord-5 bg-cover bg-center h-screen">
     <div class="flex flex-row h-full">
         <section class="w-2/12 bg-nord-1 flex flex-col gap-12 px-4 pt-16">
             <h1 class="text-center text-2xl font-bold">Unknspec: Admin</h1>
             <nav class="flex flex-col gap-4">
-                <a href="#" class="px-4 py-2 bg-nord-2 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Dashboard<i class="fa-solid fa-clipboard"></i></a>
-                <a href="#" class="px-4 py-2 bg-nord-2 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Articles<i class="fa-solid fa-newspaper"></i></a>
+                <button hx-get="/admin/articles" hx-target="main" hx-swap="innerHTML" class="px-4 py-2 bg-nord-2 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Articles<i class="fa-solid fa-newspaper"></i></button>
             </nav>
-            <a href="#" class="px-4 py-2 bg-nord-11 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Logout <i class="fa-solid fa-right-from-bracket"></i></a>
+            <button class="px-4 py-2 bg-nord-11 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Logout <i class="fa-solid fa-right-from-bracket"></i></button>
         </section>
         <main class="flex flex-col h-full overflow-y-scroll w-10/12 px-10 pt-20 gap-4">
-            <div class="w-full h-80 bg-nord-3 opacity-80 rounded-sm">
-            </div>
+            {{block "home" .}}
+            <h1 class="text-3xl text-nord-6 text-center font-bold">Welcome to admin panel</h1>
+            {{end}}
         </main>
     </div>
 </body>
