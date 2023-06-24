@@ -1,70 +1,57 @@
-{{block "newArticle" .}}
-<h1 class="text-3xl text-nord-6">New Article</h1>
-<div class="flex flex-row gap-4 text-center">
-    <button hx-get="/admin/articles" hx-target="main" hx-swap="innerHTML" hx-confirm="Are you sure want leave change unsaved?" class="px-4 py-2 bg-nord-2 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Cancel</button>
-    <button hx-post="/admin/article" hx-target="main" hx-swap="innerHTML" hx-confirm="Are you sure want save article?" hx-include="[name='title'], [name='abstract'], [name='body'], [name='isDraft']" class="px-4 py-2 bg-nord-14 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Save</button>
-</div>
-<div class="flex flex-col gap-4 bg-nord-1 px-4 py-4 rounded-sm">
-    <label class="text-2xl text-nord-5">
-        Title
-    </label>
-    <input type="text" name="title" placeholder="Enter title" class="bg-nord-2 text-nord-5 px-4 py-2 rounded-sm">
-</div>
-<div class="flex flex-col gap-2 bg-nord-1 px-4 py-4 rounded-sm">
-    <label class="text-2xl text-nord-5">
-        Abstract
-    </label>
-    <span class="text-nord-7">max length 512 symbols</span>
-    <textarea name="abstract" placeholder="Enter abstract" rows="4" maxlength="512" class="bg-nord-2 text-nord-5 px-4 py-2 rounded-sm resize-none"></textarea>
-</div>
-<div class="flex flex-row gap-4 bg-nord-1 px-4 py-4 rounded-sm items-baseline">
-    <label class="text-2xl text-nord-6">
-        Is Draft: 
-    </label>
-    <input type="checkbox" name="isDraft">
-</div>
-<div class="flex flex-col gap-2 bg-nord-1 px-4 py-4 rounded-sm">
-    <label class="text-2xl text-nord-5">
-        Body
-    </label>
-    <span class="text-nord-7">markdown</span>
-    <textarea name="body" placeholder="Enter body" class="bg-nord-2 text-nord-5 px-4 py-2 rounded-sm resize-none h-[80vh]"></textarea>
-</div>
-{{end}}
-
-{{block "editArticle" .}}
-{{with .article}}
-<h1 class="text-3xl text-nord-6">Edit Article: <span class="text-nord-8">{{.Id.Hex}}</span></h1>
-<div class="flex flex-row gap-4 text-center">
-    <button hx-get="/admin/articles" hx-target="main" hx-swap="innerHTML" hx-confirm="Are you sure want leave change unsaved?" class="px-4 py-2 bg-nord-2 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Cancel</button>
-    <button hx-put="/admin/article/{{.Id.Hex}}" hx-target="main" hx-swap="innerHTML" hx-confirm="Are you sure want save changes?" hx-include="[name='title'], [name='abstract'], [name='body'], [name='isDraft']" class="px-4 py-2 bg-nord-14 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Save</button>
-    <button hx-delete="/admin/article/{{.Id.Hex}}" hx-target="main" hx-swap="innerHTML" hx-confirm="Are you sure want delete this article?" class="px-4 py-2 bg-nord-11 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Delete</button>
-</div>
-<div class="flex flex-col gap-4 bg-nord-1 px-4 py-4 rounded-sm">
-    <label class="text-2xl text-nord-5">
-        Title
-    </label>
-    <input type="text" name="title" placeholder="Enter title" value="{{.Title}}" class="bg-nord-2 text-nord-5 px-4 py-2 rounded-sm">
-</div>
-<div class="flex flex-col gap-2 bg-nord-1 px-4 py-4 rounded-sm">
-    <label class="text-2xl text-nord-5">
-        Abstract
-    </label>
-    <span class="text-nord-7">max length 512 symbols</span>
-    <textarea name="abstract" placeholder="Enter abstract" rows="4" maxlength="512" class="bg-nord-2 text-nord-5 px-4 py-2 rounded-sm resize-none">{{.Abstract}}</textarea>
-</div>
-<div class="flex flex-row gap-4 bg-nord-1 px-4 py-4 rounded-sm items-baseline">
-    <label class="text-2xl text-nord-6">
-        Is Draft: 
-    </label>
-    <input type="checkbox" name="isDraft" {{if .IsDraft}} checked {{end}}>
-</div>
-<div class="flex flex-col gap-2 bg-nord-1 px-4 py-4 rounded-sm">
-    <label class="text-2xl text-nord-5">
-        Body
-    </label>
-    <span class="text-nord-7">markdown</span>
-    <textarea name="body" placeholder="Enter body" class="bg-nord-2 text-nord-5 px-4 py-2 rounded-sm resize-none h-[80vh]">{{.Body}}</textarea>
-</div>
-{{end}}
-{{end}}
+<!DOCTYPE html>
+<html lang="en" class="sm:scroll-smooth">
+<head>
+    <link rel="shortcut icon" href="/public/images/favicon.png">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/public/css/res.css">
+    <script src="https://kit.fontawesome.com/489757ffcd.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.2" integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/hyperscript.org@0.9.8"></script>
+    <title>Unknspec: Admin</title>
+</head>
+<body class="bg-nord-0 text-nord-5 bg-cover bg-center h-screen">
+    <div class="flex flex-row h-full">
+        <section class="w-2/12 bg-nord-1 flex flex-col gap-12 px-4 pt-10">
+            <h1 class="text-center text-2xl font-bold">Unknspec: Admin</h1>
+            <nav class="flex flex-col gap-4">
+                <button class="px-4 py-2 bg-nord-2 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Home<i class="fa-solid fa-house"></i></button>
+                <button class="px-4 py-2 bg-nord-2 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Articles<i class="fa-solid fa-newspaper"></i></button>
+            </nav>
+            <button class="px-4 py-2 bg-nord-11 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Logout <i class="fa-solid fa-right-from-bracket"></i></button>
+        </section>
+        <main class="flex flex-col h-screen w-10/12 px-10 pt-10 gap-5 overflow-y-scroll">
+            <div class="flex flex-col gap-5 w-1/2 mx-auto">
+                <div class="flex flex-row gap-3 items-center">
+                    <h1 class="text-2xl font-bold">Article</h1>
+                    <button class="text-xl py-2 px-3 bg-nord-14 rounded-lg"><i class="fa-solid fa-check"></i> Save</button>
+                    <button class="text-xl py-2 px-3 bg-nord-3 rounded-lg"><i class="fa-solid fa-xmark"></i> Cancel</button>
+                    <div class="grow"></div>
+                    <button class="text-xl py-2 px-3 bg-nord-11 rounded-lg"><i class="fa-solid fa-trash"></i> Delete</button>
+                </div>
+                <div class="w-full rounded-lg flex flex-col gap-3 items-start">
+                    <h1 class="text-xl font-bold">Is draft</h1>
+                    <input type="checkbox" name="isDraft">
+                </div>
+                <div class="w-full rounded-lg flex flex-col gap-3">
+                    <h1 class="text-xl font-bold">Title</h1>
+                    <input type="text" name="title" placeholder="enter article title..." class="grow px-3 py-2 bg-nord-2 rounded-lg">
+                </div>
+                <div class="w-full rounded-lg flex flex-col gap-3">
+                    <h1 class="text-xl font-bold">Tags</h1>
+                    <input type="text" name="tags" placeholder="enter tag..." class="grow px-3 py-2 bg-nord-2 rounded-lg">
+                </div>
+                <div class="w-full rounded-lg flex flex-col gap-3">
+                    <h1 class="text-xl font-bold">Abstract</h1>
+                    <textarea name="abstract" placeholder="enter article abstract..." class="grow px-3 py-2 bg-nord-2 rounded-lg"></textarea>
+                </div>
+                <div class="w-full rounded-lg flex flex-col gap-3">
+                    <h1 class="text-xl font-bold">Body</h1>
+                    <textarea name="body" placeholder="enter article body..." class="grow px-3 py-2 bg-nord-2 rounded-lg"></textarea>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
