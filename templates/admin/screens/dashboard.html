@@ -1,0 +1,33 @@
+{{template "adminHeader"}}
+{{template "adminSidenav"}}
+<main class="flex flex-col h-screen w-10/12 px-10 pt-10 gap-5 overflow-y-scroll">
+    <h1 class="text-2xl font-bold">Dashboard</h1>
+    <div class="flex flex-row gap-5 w-full">
+        <div class="w-1/2 h-[50vh] bg-nord-1 rounded-lg flex flex-col gap-3 p-5">
+            <h1 class="text-xl font-bold">Todo list:</h1>
+            <div class="flex flex-row gap-3">
+                <input type="text" name="todo" placeholder="enter task" class="grow px-3 py-2 bg-nord-2 rounded-lg">
+                <button hx-post="./dashboard/tasks" hx-include="[name='todo']" hx-swap="innerHTML" hx-target="#tasks" class="text-xl py-2 px-3 bg-nord-14 rounded-lg"><i class="fa-solid fa-plus"></i></button>
+            </div>
+            <hr>
+            <div id="tasks" class="flex flex-col w-full gap-4 overflow-y-scroll">
+                {{block "tasks" .}}
+                {{range $i, $val := .tasks}}
+                <div class="flex flex-row gap-3 px-4 py-2 bg-nord-2 rounded-lg align-top">
+                    <span class="flex-grow">{{$val}}</span>
+                    <button hx-delete="./dashboard/tasks?id={{$i}}" hx-swap="innerHTML" hx-target="#tasks" class="text-xl py-2 px-3 w-12 h-12 bg-nord-12 rounded-lg"><i class="fa-solid fa-trash"></i></button>
+                </div>
+                {{end}}
+                {{end}}
+            </div>
+        </div>
+    </div>
+    <div class="flex flex-row gap-5 w-full">
+        <div hx-get="./dashboard/cpu" hx-trigger="every 1m" hx-swap="innerHTML" class="bg-nord-1 p-8">
+            {{block "cpu" .}}
+            {{ .cpu }}
+            {{end}}
+        </div>
+    </div>
+</main>
+{{template "adminFooter"}}

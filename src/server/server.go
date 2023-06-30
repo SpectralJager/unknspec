@@ -51,15 +51,12 @@ func (s *Server) Run() {
 	router.Use(s.logger)
 
 	// admin routes
-	admin := router.PathPrefix("/admin").Subrouter()
-	admin.HandleFunc("/", s.handleAdmin)
-	admin.HandleFunc("/articles", s.recieveArticles).Methods("GET", "POST")
-	admin.HandleFunc("/article", s.recieveArticle).Methods("GET", "POST")
-	admin.HandleFunc("/article/{id:[0-9a-zA-Z]+}", s.recieveArticleId).Methods("GET", "PUT", "DELETE")
+	adminRouter := router.PathPrefix("/admin").Subrouter()
+	adminRouter.HandleFunc("/", s.handleAdminDashboard).Methods("GET")
+	adminRouter.HandleFunc("/dashboard/tasks", s.handleAdminDashboardTasks).Methods("DELETE", "POST")
+	adminRouter.HandleFunc("/dashboard/cpu", s.handleAdminDashboardCpu).Methods("GET")
 
 	// public routes
-	router.HandleFunc("/articles", s.handleArticles).Methods("GET", "POST")
-	router.HandleFunc("/article/{id:[0-9a-zA-Z]+}", s.handleArticle).Methods("GET")
 
 	log.Printf("serve on %s ...\n", s.addr)
 	http.ListenAndServe(s.addr, router)
