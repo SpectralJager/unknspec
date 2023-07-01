@@ -54,7 +54,7 @@ func (s *Server) Run() {
 	adminRouter := router.PathPrefix("/admin").Subrouter()
 	adminRouter.HandleFunc("/", s.handleAdminDashboard).Methods("GET")
 	adminRouter.HandleFunc("/dashboard/tasks", s.handleAdminDashboardTasks).Methods("DELETE", "POST")
-	adminRouter.HandleFunc("/dashboard/cpu", s.handleAdminDashboardCpu).Methods("GET")
+	adminRouter.HandleFunc("/dashboard/time", s.handleAdminDashboardTime).Methods("GET")
 
 	// public routes
 

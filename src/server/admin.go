@@ -29,7 +29,7 @@ func (s *Server) handleAdminDashboard(w http.ResponseWriter, r *http.Request) {
 	}
 	tmpl.Execute(w, ReponseMap{
 		"tasks": taskDb,
-		"cpu":   time.Now().UTC(),
+		"time":  getTime(),
 	})
 }
 
@@ -62,12 +62,16 @@ func (s *Server) handleAdminDashboardTasks(w http.ResponseWriter, r *http.Reques
 	})
 }
 
-func (s *Server) handleAdminDashboardCpu(w http.ResponseWriter, r *http.Request) {
+func (s *Server) handleAdminDashboardTime(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles(adminScreensPath + "dashboard.html")
 	if err != nil {
 		log.Fatalln(err)
 	}
-	tmpl.ExecuteTemplate(w, "cpu", ReponseMap{
-		"cpu": time.Now().UTC(),
+	tmpl.ExecuteTemplate(w, "time", ReponseMap{
+		"time": getTime(),
 	})
+}
+
+func getTime() string {
+	return time.Now().Format(time.RFC822)
 }
