@@ -1,6 +1,7 @@
 package server
 
 import (
+	"html/template"
 	"log"
 	"net/http"
 	"unknspec/src/database"
@@ -10,35 +11,25 @@ import (
 
 type ReponseMap map[string]any
 
+type Page interface {
+	RenderPage() (*template.Template, error)
+	Render(name string) (*template.Template, error)
+}
+
 type Server struct {
-	addr string
-	db   *database.MongoStorage
+	addr      string
+	db        *database.MongoStorage
+	adminPage Page
+	mainPage  Page
 }
 
 func NewServer(addr string, db *database.MongoStorage) *Server {
 	return &Server{
-		addr: addr,
-		db:   db,
+		addr:      addr,
+		db:        db,
+		adminPage: NewAdminPage("templates/admin.html"),
 	}
 }
-
-/*
-/ |>
-	articles |>
-		search
-		update
-	article
-/admin |>
-	articles |>
-		search
-	article |>
-		new |>
-			save
-		edit |>
-			save
-			delete
-	result
-*/
 
 func (s *Server) Run() {
 	router := mux.NewRouter()
@@ -51,11 +42,11 @@ func (s *Server) Run() {
 	router.Use(s.logger)
 
 	// admin routes
-	adminRouter := router.PathPrefix("/admin").Subrouter()
-	adminRouter.HandleFunc("/", s.handleAdminDashboard).Methods("GET")
-	adminRouter.HandleFunc("/dashboard/tasks", s.handleAdminDashboardTasks).Methods("DELETE", "POST")
-	adminRouter.HandleFunc("/dashboard/time", s.handleAdminDashboardTime).Methods("GET")
-
+	admin := router.PathPrefix("/admin").Subrouter()
+	admin.HandleFunc("/", s.handleAdmin)
+	admin.HandleFunc("/dashboard", s.adminDashboard)
+	admin.HandleFunc("/dashboard/time", s.adminDashboardTime)
+	admin.HandleFunc("/articles", s.adminArticles)
 	// public routes
 
 	log.Printf("serve on %s ...\n", s.addr)

@@ -81,7 +81,7 @@ func (db *MongoStorage) CreateArticle(ctx context.Context, article *models.Artic
 	}
 	article.Id = primitive.NewObjectID()
 	article.CreatedAt = time.Now().UTC()
-	article.UpadtedAt = time.Now().UTC()
+	article.UpdatedAt = time.Now().UTC()
 	_, err = db.articlesCollection.InsertOne(ctx, article)
 	return err
 }

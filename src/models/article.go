@@ -12,7 +12,7 @@ type Article struct {
 	Abstract  string             `json:"abstract" bson:"abstract"`
 	Body      string             `json:"body" bson:"body"`
 	CreatedAt time.Time          `json:"created_at" bson:"created_at"`
-	UpadtedAt time.Time          `json:"upadted_at" bson:"updated_at"`
+	UpdatedAt time.Time          `json:"upadted_at" bson:"updated_at"`
 	IsDraft   bool               `json:"is_draft" bson:"is_draft"`
 	Author    string             `json:"author" bson:"author"`
 }

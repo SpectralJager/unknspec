@@ -1,0 +1,62 @@
+{{define "header"}}
+<!DOCTYPE html>
+<html lang="en" class="sm:scroll-smooth">
+<head>
+    <link rel="shortcut icon" href="/public/images/favicon.png">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/public/css/res.css">
+    <script src="https://kit.fontawesome.com/489757ffcd.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.2" integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/hyperscript.org@0.9.8"></script>
+    <title>Unknspec: {{.}}</title>
+</head>
+<body class="bg-nord-0 text-nord-5 bg-cover bg-center h-screen" style="background-image: url('/public/images/tiles2.svg');">
+    <section class="w-full pt-20 flex flex-col justify-center items-center">
+        <img src="/public/images/logo.png" alt="Unknspec" class="text-5xl text-center text-nord-8 w-80">
+        <nav class="my-6 text-2xl font-bold flex gap-6">
+            <a href="/articles" class="transition-colors hover:text-nord-10">Articles</a>
+        </nav>
+    </section>
+    <hr class="border-nord-3 w-10/12 mx-auto sm:w-8/12 lg:w-6/12 xl:w-4/12">
+{{end}}
+
+{{define "footer"}}
+    <footer class="h-32 bg-nord-2 text-nord-4 text-xl flex flex-col justify-center items-center gap-2 mt-10 sticky top-[100vh]">
+        <span class="">Created by <span class="text-nord-8 font-bold transition-colors hover:text-nord-11">SpectralJager</span></span>
+        <div class="flex flex-row gap-4">
+            <a href="https://github.com/SpectralJager" class=""><i class="fa-brands fa-github"></i></a>            
+            <a href="https://t.me/unkn_spectrum" class=""><i class="fa-brands fa-telegram"></i></a>
+        </div>
+    </footer>
+</body>
+</html>
+{{end}}
+
+{{define "article"}}
+{{template "header" .article.Title}} 
+<main class="w-full mx-auto px-8 py-4 mt-8 sm:w-8/12 lg:w-6/12 xl:w-5/12 2xl:w-4/12 bg-nord-1 rounded-sm">
+    <article class="prose prose-invert prose-p:text-justify prose-p:mt-0 prose-headings:mt-8 prose-headings:mb-4 prose-blockquote:border-nord-10 prose-blockquote:bg-nord-10 prose-blockquote:bg-opacity-20 prose-blockquote:px-4 prose-blockquote:py-2 prose-figcaption:text-lg prose-pre:overflow-x-auto prose-a:text-nord-8 prose-hr:border-nord-3 prose-hr:mb-0 prose-hr:mt-2 prose-figcaption:text-justify">
+        <h1>{{.article.Title}}</h1>
+        <p class="px-5 py-2 bg-nord-14 bg-opacity-25">{{.article.Abstract}}</p>
+        {{.body}}
+    </article>
+</main>
+{{template "footer"}} 
+{{end}}
+
+{{define "articles"}}
+{{template "header" "Posts"}}
+<main class="flex flex-col w-10/12 mx-auto my-4 sm:w-8/12 lg:w-6/12 xl:w-4/12">
+    <section class="flex flex-col gap-6">
+        {{range .articles}}
+        <article class="bg-nord-1 px-6 py-4 rounded transition-colors hover:bg-nord-3">
+            <h4 class="text-lg text-nord-6 font-bold lg:text-2xl mb-4"><a href="/article/{{.Id.Hex}}">{{.Title}}</a></h4>
+            <p class="text-sm text-justify text-nord-4 lg:text-lg">{{.Abstract}}</p>
+        </article>
+        {{end}}
+    </section>
+</main>
+{{template "footer"}}
+{{end}}

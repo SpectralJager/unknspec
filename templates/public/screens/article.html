@@ -1,9 +1,0 @@
-{{template "header" .article.Title}} 
-<main class="w-full mx-auto px-8 py-4 mt-8 sm:w-8/12 lg:w-6/12 xl:w-5/12 2xl:w-4/12 bg-nord-1 rounded-sm">
-    <article class="prose prose-invert prose-p:text-justify prose-p:mt-0 prose-headings:mt-8 prose-headings:mb-4 prose-blockquote:border-nord-10 prose-blockquote:bg-nord-10 prose-blockquote:bg-opacity-20 prose-blockquote:px-4 prose-blockquote:py-2 prose-figcaption:text-lg prose-pre:overflow-x-auto prose-a:text-nord-8 prose-hr:border-nord-3 prose-hr:mb-0 prose-hr:mt-2 prose-figcaption:text-justify">
-        <h1>{{.article.Title}}</h1>
-        <p class="px-5 py-2 bg-nord-14 bg-opacity-25">{{.article.Abstract}}</p>
-        {{.body}}
-    </article>
-</main>
-{{template "footer"}} 

@@ -1,0 +1,177 @@
+{{define "header"}}
+<!DOCTYPE html>
+<html lang="en" class="sm:scroll-smooth">
+<head>
+    <link rel="shortcut icon" href="/public/images/favicon.png">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/public/css/res.css">
+    <script src="https://kit.fontawesome.com/489757ffcd.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.2" integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/hyperscript.org@0.9.8"></script>
+    <title>Unknspec: Admin</title>
+</head>
+<body class="bg-nord-0 text-nord-5 bg-cover bg-center h-screen">
+    <div class="flex flex-row h-full">
+{{end}}
+
+{{define "footer"}}
+    </div>
+</body>
+</html>
+{{end}}
+
+{{define "sidenav"}}
+<section class="w-2/12 bg-nord-1 flex flex-col gap-12 px-4 pt-10">
+    <h1 class="text-center text-2xl font-bold">Unknspec: Admin</h1>
+    <nav class="flex flex-col gap-4">
+        <button hx-get="/admin/dashboard" hx-target="main" hx-swap="outerHTML" class="px-4 py-2 bg-nord-2 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Home<i class="fa-solid fa-house"></i></button>
+        <button hx-get="/admin/articles" hx-target="main" hx-swap="outerHTML" class="px-4 py-2 bg-nord-2 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Articles<i class="fa-solid fa-newspaper"></i></button>
+    </nav>
+    <button class="px-4 py-2 bg-nord-11 text-nord-4 rounded-sm hover:opacity-80 transition-opacity flex justify-between items-baseline">Logout <i class="fa-solid fa-right-from-bracket"></i></button>
+</section>
+{{end}}
+
+{{define "dashboard"}}
+<main class="flex flex-col h-screen w-10/12 px-10 py-10 gap-5 overflow-y-scroll">
+    <h1 class="text-2xl font-bold">Dashboard</h1>
+    <div class="flex flex-row gap-5 w-full">
+        <div class="w-1/2 max-h-[80vh] h-fit bg-nord-1 rounded-lg flex flex-col gap-3 p-5">
+            <h1 class="text-xl font-bold">Todo list:</h1>
+            <div class="flex flex-row gap-3">
+                <input type="text" name="todo" placeholder="enter task" class="grow px-3 py-2 bg-nord-2 rounded-lg">
+                <button hx-post="./dashboard/tasks" hx-include="[name='todo']" hx-swap="innerHTML" hx-target="#tasks" class="text-xl py-2 px-3 bg-nord-14 rounded-lg"><i class="fa-solid fa-plus"></i></button>
+            </div>
+            <hr>
+            <div id="tasks" class="flex flex-col w-full gap-4 overflow-y-scroll">
+                {{block "tasks" .}}
+                {{range $i, $val := .tasks}}
+                <div class="flex flex-row gap-3 px-4 py-2 bg-nord-2 rounded-lg align-top">
+                    <span class="flex-grow">{{$val}}</span>
+                    <button hx-delete="./dashboard/tasks?id={{$i}}" hx-swap="innerHTML" hx-target="#tasks" class="text-xl py-2 px-3 w-12 h-12 bg-nord-12 rounded-lg"><i class="fa-solid fa-trash"></i></button>
+                </div>
+                {{else}}
+                <span class="text-lg text-nord-5 opacity-70 text-center">Here is no active tasks...</span>
+                {{end}}
+                {{end}}
+            </div>
+        </div>
+        <div class="w-1/2 flex flex-col gap-3">
+            <div class="bg-nord-1 w-fit h-fit p-8 rounded-lg text-xl text-nord-4">
+                <span class="font-bold">Server Time: </span>
+                <span hx-get="./dashboard/time" hx-trigger="every 30s" hx-swap="innerHTML" class="">
+                {{block "time" .}}
+                {{.time}}
+                {{end}}
+                <img src="/public/images/puff.svg" class="inline-block w-[20px] h-[20px]"> Loading...
+                </span>
+            </div>
+            <div class="w-full max-h-[70vh] h-fit bg-nord-1 rounded-lg flex flex-col gap-3 p-5">
+                <h1 class="text-xl font-bold">Server Logs</h1>
+                <div class="flex flex-col gap-3 p-4 overflow-y-scroll bg-nord-0 rounded-lg">
+                    <span class="border-l-nord-7 border-l-4 pl-3 py-2">Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias tenetur, sapiente ipsam voluptas at molestias esse eaque ipsa a inventore?</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{{end}}
+
+{{define "articles"}}
+<main class="flex flex-col h-screen w-10/12 px-10 pt-10 gap-5 overflow-y-scroll">
+    <div class="flex flex-row gap-3 items-center">
+        <h1 class="text-2xl font-bold">Articles</h1>
+        <a href="/admin/articles/new" class="text-xl py-2 px-3 bg-nord-14 rounded-lg"><i class="fa-solid fa-plus"></i></a>
+    </div>
+    <div class="w-full h-fit bg-nord-1 rounded-lg flex flex-col gap-3 p-5">
+        <h1 class="text-xl font-bold">Search</h1>
+        <div class="flex flex-row gap-3">
+            <input type="text" name="search" placeholder="enter article title..." class="grow px-3 py-2 bg-nord-2 rounded-lg">
+            <button class="text-xl py-2 px-3 bg-nord-10 rounded-lg"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+    </div>
+    <table class="w-full text-sm text-left text-nord-4">
+        <thead class="text-xs text-nord-6 uppercase bg-nord-3">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    Id
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Title
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Tags
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Edited at
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Is draft
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    <span class="sr-only">Edit</span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .articles}}
+            <tr class="border-b bg-nord-1 text-nord-4">
+                <td class="px-6 py-4">
+                    {{.Id.Hex}}
+                </td>
+                <td class="px-6 py-4">
+                    {{.Title}}
+                </td>
+                <td class="px-6 py-4">
+                    [Lorem, Ipusm]
+                </td>
+                <td class="px-6 py-4">
+                    {{.UpdatedAt}}
+                </td>
+                <td class="px-6 py-4">
+                    {{.IsDraft}}
+                </td>
+                <td class="px-6 py-4 text-right">
+                    <button class="font-medium text-nord-12 hover:bg-nord-12 hover:text-nord-6 transition-colors px-4 py-2 rounded-md">Edit</button>
+                </td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+</main>
+{{end}}
+
+{{define "createArticle"}}
+<main class="flex flex-col h-screen w-10/12 px-10 pt-10 gap-5 overflow-y-scroll">
+    <div class="flex flex-col gap-5 w-1/2 mx-auto">
+        <div class="flex flex-row gap-3 items-center">
+            <h1 class="text-2xl font-bold">Article</h1>
+            <button class="text-xl py-2 px-3 bg-nord-14 rounded-lg"><i class="fa-solid fa-check"></i> Save</button>
+            <button class="text-xl py-2 px-3 bg-nord-3 rounded-lg"><i class="fa-solid fa-xmark"></i> Cancel</button>
+            <div class="grow"></div>
+            <button class="text-xl py-2 px-3 bg-nord-11 rounded-lg"><i class="fa-solid fa-trash"></i> Delete</button>
+        </div>
+        <div class="w-full rounded-lg flex flex-col gap-3 items-start">
+            <h1 class="text-xl font-bold">Is draft</h1>
+            <input type="checkbox" name="isDraft">
+        </div>
+        <div class="w-full rounded-lg flex flex-col gap-3">
+            <h1 class="text-xl font-bold">Title</h1>
+            <input type="text" name="title" placeholder="enter article title..." class="grow px-3 py-2 bg-nord-2 rounded-lg">
+        </div>
+        <div class="w-full rounded-lg flex flex-col gap-3">
+            <h1 class="text-xl font-bold">Tags</h1>
+            <input type="text" name="tags" placeholder="enter tag..." class="grow px-3 py-2 bg-nord-2 rounded-lg">
+        </div>
+        <div class="w-full rounded-lg flex flex-col gap-3">
+            <h1 class="text-xl font-bold">Abstract</h1>
+            <textarea name="abstract" placeholder="enter article abstract..." class="grow px-3 py-2 bg-nord-2 rounded-lg"></textarea>
+        </div>
+        <div class="w-full rounded-lg flex flex-col gap-3">
+            <h1 class="text-xl font-bold">Body</h1>
+            <textarea name="body" placeholder="enter article body..." class="grow px-3 py-2 bg-nord-2 rounded-lg"></textarea>
+        </div>
+    </div>
+</main>
+{{end}}
