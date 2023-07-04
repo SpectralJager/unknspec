@@ -9,7 +9,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type ReponseMap map[string]any
+type ResponseMap map[string]any
 
 type Page interface {
 	RenderPage() (*template.Template, error)
@@ -43,10 +43,13 @@ func (s *Server) Run() {
 
 	// admin routes
 	admin := router.PathPrefix("/admin").Subrouter()
-	admin.HandleFunc("/", s.handleAdmin)
-	admin.HandleFunc("/dashboard", s.adminDashboard)
-	admin.HandleFunc("/dashboard/time", s.adminDashboardTime)
-	admin.HandleFunc("/articles", s.adminArticles)
+	admin.HandleFunc("/", s.handleAdmin).Methods("GET")
+	admin.HandleFunc("/dashboard", s.adminDashboard).Methods("GET")
+	admin.HandleFunc("/dashboard/time", s.adminDashboardTime).Methods("GET")
+	admin.HandleFunc("/dashboard/tasks", s.adminDashboardTasks).Methods("GET", "POST", "DELETE")
+	admin.HandleFunc("/articles", s.adminArticles).Methods("GET", "POST")
+	admin.HandleFunc("/article/new", s.adminCreateArticle).Methods("GET", "POST")
+	admin.HandleFunc("/article/edit", s.adminEditArticle).Methods("GET", "POST", "DELETE")
 	// public routes
 
 	log.Printf("serve on %s ...\n", s.addr)

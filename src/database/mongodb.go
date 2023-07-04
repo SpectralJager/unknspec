@@ -14,8 +14,9 @@ import (
 )
 
 type MongoStorage struct {
-	client             *mongo.Client
-	articlesCollection *mongo.Collection
+	client                *mongo.Client
+	articlesCollection    *mongo.Collection
+	adminTasksCollections *mongo.Collection
 }
 
 func NewMongoStorage(url string) *MongoStorage {
@@ -29,10 +30,12 @@ func NewMongoStorage(url string) *MongoStorage {
 		log.Fatal(err)
 	}
 	articles := client.Database("unknspec").Collection("articles")
+	tasks := client.Database("unknspec").Collection("adminTasks")
 
 	return &MongoStorage{
-		client:             client,
-		articlesCollection: articles,
+		client:                client,
+		articlesCollection:    articles,
+		adminTasksCollections: tasks,
 	}
 }
 
@@ -140,4 +143,44 @@ func (db *MongoStorage) filterArticles(ctx context.Context, filter bson.D) ([]*m
 		return articles, err
 	}
 	return articles, nil
+}
+
+func (db *MongoStorage) CreateAdminTask(ctx context.Context, task *models.AdminTask) error {
+	task.Id = primitive.NewObjectID()
+	_, err := db.adminTasksCollections.InsertOne(ctx, task)
+	return err
+}
+
+func (db *MongoStorage) GetAdminTasks(ctx context.Context) ([]*models.AdminTask, error) {
+	var tasks []*models.AdminTask
+	cur, err := db.adminTasksCollections.Find(ctx, bson.D{{}})
+	if err != nil {
+		return tasks, err
+	}
+	defer cur.Close(ctx)
+	for cur.Next(ctx) {
+		var task models.AdminTask
+		err := cur.Decode(&task)
+		if err != nil {
+			return tasks, err
+		}
+		tasks = append(tasks, &task)
+	}
+	if err := cur.Err(); err != nil {
+		return tasks, err
+	}
+	return tasks, nil
+}
+
+func (db *MongoStorage) DeleteAdminTask(ctx context.Context, id string) error {
+	objId, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.D{{Key: "_id", Value: objId}}
+	res, err := db.adminTasksCollections.DeleteOne(ctx, filter)
+	if err != nil {
+		return err
+	}
+	if res.DeletedCount == 0 {
+		return fmt.Errorf("no task were deleted")
+	}
+	return nil
 }

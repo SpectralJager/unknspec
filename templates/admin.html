@@ -40,19 +40,21 @@
         <div class="w-1/2 max-h-[80vh] h-fit bg-nord-1 rounded-lg flex flex-col gap-3 p-5">
             <h1 class="text-xl font-bold">Todo list:</h1>
             <div class="flex flex-row gap-3">
-                <input type="text" name="todo" placeholder="enter task" class="grow px-3 py-2 bg-nord-2 rounded-lg">
-                <button hx-post="./dashboard/tasks" hx-include="[name='todo']" hx-swap="innerHTML" hx-target="#tasks" class="text-xl py-2 px-3 bg-nord-14 rounded-lg"><i class="fa-solid fa-plus"></i></button>
+                <input type="text" name="task" placeholder="enter task" class="grow px-3 py-2 bg-nord-2 rounded-lg">
+                <button hx-post="./dashboard/tasks" hx-include="[name='task']" hx-swap="innerHTML" hx-target="#tasks" class="text-xl py-2 px-3 bg-nord-14 rounded-lg"><i class="fa-solid fa-plus"></i></button>
             </div>
             <hr>
-            <div id="tasks" class="flex flex-col w-full gap-4 overflow-y-scroll">
+            <div id="tasks" hx-trigger="load" hx-swap="innerHTML" hx-get="./dashboard/tasks" class="flex flex-col w-full gap-4 overflow-y-scroll">
                 {{block "tasks" .}}
-                {{range $i, $val := .tasks}}
+                {{range .tasks}}
                 <div class="flex flex-row gap-3 px-4 py-2 bg-nord-2 rounded-lg align-top">
-                    <span class="flex-grow">{{$val}}</span>
-                    <button hx-delete="./dashboard/tasks?id={{$i}}" hx-swap="innerHTML" hx-target="#tasks" class="text-xl py-2 px-3 w-12 h-12 bg-nord-12 rounded-lg"><i class="fa-solid fa-trash"></i></button>
+                    <span class="flex-grow">{{.Task}}</span>
+                    <button hx-delete="./dashboard/tasks?id={{.Id.Hex}}" hx-swap="innerHTML" hx-target="#tasks" class="text-xl py-2 px-3 w-12 h-12 bg-nord-12 rounded-lg"><i class="fa-solid fa-trash"></i></button>
                 </div>
                 {{else}}
-                <span class="text-lg text-nord-5 opacity-70 text-center">Here is no active tasks...</span>
+                <span class="text-lg text-nord-5 opacity-70 text-center">
+                    Here is no active tasks...
+                </span>
                 {{end}}
                 {{end}}
             </div>
@@ -82,15 +84,17 @@
 <main class="flex flex-col h-screen w-10/12 px-10 pt-10 gap-5 overflow-y-scroll">
     <div class="flex flex-row gap-3 items-center">
         <h1 class="text-2xl font-bold">Articles</h1>
-        <a href="/admin/articles/new" class="text-xl py-2 px-3 bg-nord-14 rounded-lg"><i class="fa-solid fa-plus"></i></a>
+        <button hx-get="/admin/article/new" hx-target="main" hx-swap="outerHTML" class="text-xl py-2 px-3 bg-nord-14 rounded-lg"><i class="fa-solid fa-plus"></i></button>
     </div>
     <div class="w-full h-fit bg-nord-1 rounded-lg flex flex-col gap-3 p-5">
         <h1 class="text-xl font-bold">Search</h1>
         <div class="flex flex-row gap-3">
             <input type="text" name="search" placeholder="enter article title..." class="grow px-3 py-2 bg-nord-2 rounded-lg">
-            <button class="text-xl py-2 px-3 bg-nord-10 rounded-lg"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <button hx-post="/admin/articles" hx-include="[name='search']" hx-target="table" hx-swap="outerHTML" class="text-xl py-2 px-3 bg-nord-10 rounded-lg"><i class="fa-solid fa-magnifying-glass"></i></button>
         </div>
     </div>
+    {{block "articlesTable" .}}
+    {{if .articles}}
     <table class="w-full text-sm text-left text-nord-4">
         <thead class="text-xs text-nord-6 uppercase bg-nord-3">
             <tr>
@@ -99,9 +103,6 @@
                 </th>
                 <th scope="col" class="px-6 py-3">
                     Title
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Tags
                 </th>
                 <th scope="col" class="px-6 py-3">
                     Edited at
@@ -124,33 +125,32 @@
                     {{.Title}}
                 </td>
                 <td class="px-6 py-4">
-                    [Lorem, Ipusm]
-                </td>
-                <td class="px-6 py-4">
                     {{.UpdatedAt}}
                 </td>
                 <td class="px-6 py-4">
                     {{.IsDraft}}
                 </td>
                 <td class="px-6 py-4 text-right">
-                    <button class="font-medium text-nord-12 hover:bg-nord-12 hover:text-nord-6 transition-colors px-4 py-2 rounded-md">Edit</button>
+                    <button hx-get="/admin/article/edit?id={{.Id.Hex}}" hx-target="main" hx-swap="outerHTML" class="font-medium text-nord-12 hover:bg-nord-12 hover:text-nord-6 transition-colors px-4 py-2 rounded-md">Edit</button>
                 </td>
             </tr>
             {{end}}
         </tbody>
     </table>
+    {{else}}
+    <div class="text-center text-2xl text-nord-4">Here is no articles...</div>
+    {{end}}
+    {{end}}
 </main>
 {{end}}
 
 {{define "createArticle"}}
-<main class="flex flex-col h-screen w-10/12 px-10 pt-10 gap-5 overflow-y-scroll">
-    <div class="flex flex-col gap-5 w-1/2 mx-auto">
-        <div class="flex flex-row gap-3 items-center">
-            <h1 class="text-2xl font-bold">Article</h1>
-            <button class="text-xl py-2 px-3 bg-nord-14 rounded-lg"><i class="fa-solid fa-check"></i> Save</button>
-            <button class="text-xl py-2 px-3 bg-nord-3 rounded-lg"><i class="fa-solid fa-xmark"></i> Cancel</button>
-            <div class="grow"></div>
-            <button class="text-xl py-2 px-3 bg-nord-11 rounded-lg"><i class="fa-solid fa-trash"></i> Delete</button>
+<main class="flex flex-col h-screen w-10/12 px-10 py-10 gap-5 overflow-y-scroll">
+    <form class="flex flex-col gap-5 w-full mx-auto h-full">
+        <div hx-confirm="Confirm your action..." class="flex flex-row gap-3 items-center">
+            <h1 class="text-2xl font-bold">New Article</h1>
+            <button hx-post="/admin/article/new" hx-target="main" hx-swap="outerHTML" class="text-xl py-2 px-3 bg-nord-14 rounded-lg"><i class="fa-solid fa-check"></i> Save</button>
+            <button hx-get="/admin/articles" hx-target="main" hx-swap="outerHTML" class="text-xl py-2 px-3 bg-nord-3 rounded-lg"><i class="fa-solid fa-xmark"></i> Cancel</button>
         </div>
         <div class="w-full rounded-lg flex flex-col gap-3 items-start">
             <h1 class="text-xl font-bold">Is draft</h1>
@@ -161,17 +161,45 @@
             <input type="text" name="title" placeholder="enter article title..." class="grow px-3 py-2 bg-nord-2 rounded-lg">
         </div>
         <div class="w-full rounded-lg flex flex-col gap-3">
-            <h1 class="text-xl font-bold">Tags</h1>
-            <input type="text" name="tags" placeholder="enter tag..." class="grow px-3 py-2 bg-nord-2 rounded-lg">
-        </div>
-        <div class="w-full rounded-lg flex flex-col gap-3">
             <h1 class="text-xl font-bold">Abstract</h1>
             <textarea name="abstract" placeholder="enter article abstract..." class="grow px-3 py-2 bg-nord-2 rounded-lg"></textarea>
         </div>
-        <div class="w-full rounded-lg flex flex-col gap-3">
+        <div class="w-full h-full rounded-lg flex flex-col gap-3">
             <h1 class="text-xl font-bold">Body</h1>
             <textarea name="body" placeholder="enter article body..." class="grow px-3 py-2 bg-nord-2 rounded-lg"></textarea>
         </div>
-    </div>
+    </form>
+</main>
+{{end}}
+
+{{define "editArticle"}}
+<main class="flex flex-col h-screen w-10/12 px-10 py-10 gap-5 overflow-y-scroll">
+    <form class="flex flex-col gap-5 w-full mx-auto h-full">
+        {{with .article}}
+        <h1 class="text-2xl font-bold">edit Article {{.Id.Hex}}</h1>
+        <div hx-confirm="Confirm your action..." class="flex flex-row gap-3 items-center">
+            <button hx-post="/admin/article/edit?id={{.Id.Hex}}" hx-target="main" hx-swap="outerHTML" class="text-xl py-2 px-3 bg-nord-14 rounded-lg"><i class="fa-solid fa-check"></i> Save</button>
+            <button hx-get="/admin/articles" hx-target="main" hx-swap="outerHTML" class="text-xl py-2 px-3 bg-nord-3 rounded-lg"><i class="fa-solid fa-xmark"></i> Cancel</button>
+            <div class="grow"></div>
+            <button hx-delete="/admin/article/edit?id={{.Id.Hex}}" hx-target="main" hx-swap="outerHTML" class="text-xl py-2 px-3 bg-nord-11 rounded-lg"><i class="fa-solid fa-trash"></i> Delete</button>
+        </div>
+        <div class="w-full rounded-lg flex flex-col gap-3 items-start">
+            <h1 class="text-xl font-bold">Is draft</h1>
+            <input type="checkbox" name="isDraft" {{if .IsDraft}} checked {{end}}>
+        </div>
+        <div class="w-full rounded-lg flex flex-col gap-3">
+            <h1 class="text-xl font-bold">Title</h1>
+            <input type="text" name="title" placeholder="enter article title..." value="{{.Title}}" class="grow px-3 py-2 bg-nord-2 rounded-lg">
+        </div>
+        <div class="w-full rounded-lg flex flex-col gap-3">
+            <h1 class="text-xl font-bold">Abstract</h1>
+            <textarea name="abstract" placeholder="enter article abstract..." class="grow px-3 py-2 bg-nord-2 rounded-lg">{{.Abstract}}</textarea>
+        </div>
+        <div class="w-full h-full rounded-lg flex flex-col gap-3">
+            <h1 class="text-xl font-bold">Body</h1>
+            <textarea name="body" placeholder="enter article body..." class="grow px-3 py-2 bg-nord-2 rounded-lg">{{.Body}}</textarea>
+        </div>
+        {{end}}
+    </form>
 </main>
 {{end}}
